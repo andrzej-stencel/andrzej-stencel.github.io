@@ -320,7 +320,7 @@ Starting in otel mode
 
 If you have ever run the Elastic Agent, you can already see that the logs look nothing like those from the agent. On the other hand, if you’ve ever run the OpenTelemetry Collector, you can see the logs look just like those from the collector.
 
-The Elastic Agent 8.15 source code includes the libraries from the OpenTelemetry Collector, so that when run in the `otel` mode, it executes those OpenTelemetry Collector libraries, essentially behaving like a regular OpenTelemetry Collector binary.
+The Elastic Agent 8.15 source code [includes](https://github.com/elastic/elastic-agent/blob/v8.15.0/internal/pkg/otel/run.go#L36) the libraries from the OpenTelemetry Collector, so that when run in the `otel` mode, it executes those OpenTelemetry Collector libraries, essentially behaving like a regular OpenTelemetry Collector binary.
 
 The logs from the agent do not tell us much about what’s going on. A much more interesting source of information is the collector’s metrics that are exposed at the HTTP endpoint [http://localhost:8888/metrics](http://localhost:8888/metrics). Let’s take a look at those. Either open another terminal window and run `curl http://localhost:8888/metrics`, or just open the URL in a web browser.
 
@@ -442,7 +442,7 @@ Similarly to the receiver metrics, we have a pair of metrics for each signal (lo
 The `otelcol_exporter_sent_log_records` metrics tells us that 14 logs have been successfully exported by the `elasticsearch` exporter. That’s great news\! That’s exactly the 14 logs that have been collected by the `logs/platformlogs` receiver.  
 The `otelcol_exporter_send_failed_log_records` metric tells us there were 0 failures exporting logs. Good\!
 
-For metrics, the `otelcol_exporter_sent_metric_points` tells us that the `elasticsearch` exporter has exported 178638 data points. Wait, that’s a lot more (twice as much\!) than what the `hostmetrics/system` receiver collected (69042)\! What’s going on here? The additional metrics were added by the Elastic Infra Metrics processor, which creates new metrics that match the Elastic integrations, but leaves the original metrics in place.
+For metrics, the `otelcol_exporter_sent_metric_points` tells us that the `elasticsearch` exporter has exported 178638 data points. Wait, that’s a lot more (twice as much\!) than what the `hostmetrics/system` receiver collected (69042)\! What’s going on here? The additional metrics were added by the [Elastic Infra Metrics processor](https://github.com/elastic/opentelemetry-collector-components/blob/main/processor/elasticinframetricsprocessor/README.md), which creates new metrics that match the Elastic integrations, but leaves the original metrics in place.
 
 Going back to the exporter metrics, all telemetry has apparently been successfully exported by the Elasticsearch exporter. Let’s now go back to the Elastic Cloud to see it.
 
